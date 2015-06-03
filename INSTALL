@@ -1,0 +1,6 @@
+1. Untar the source archive
+2. ./configure
+3. make
+4. make install
+5. Make sure, everybody can access your radiodevice (usually /dev/radio)
+6. If you want, put the fonts (*.raf) in /usr/local/share/DMCRadio

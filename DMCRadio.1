@@ -1,0 +1,210 @@
+.TH DMCRadio 1 "June 2, 2002" "" ""
+.SH NAME
+DMCRadio - console radio application
+.SH SYNOPSIS
+DMCRadio [options]
+.SH DESCRIPTION
+.PP
+DMCRadio is a ncurses-based console program for radio tuner cards supported
+by the Video4Linux system. It's like the 'radio' program by Gerd Knorr and Juli
+Merino, but much better (I hope...). 
+.SH OPTIONS
+.TP
+.B -h --help
+Shows a small help and exits.
+.TP
+.B -m --mute
+Mutes the radio and exits.
+.TP
+.B -r dev
+.PD 0
+.TP
+.B --radiodev dev
+Sets the radiodevice to dev. The default is /dev/radio.
+.PD
+.TP
+.B -m dev
+.PD 0
+.TP
+.B --mixerdev dev
+Sets the mixerdevice to dev. The default is /dev/mixer.
+.PD
+.TP
+.B -a inp
+.PD 0
+.TP
+.B --audiodevice inp
+Sets the Audiodevice for the volume-control to inp.  The default is "vol".
+.PD
+.TP
+.B -v --version
+Prints the version and exit.
+.SH KEYBOARD CONTROLS
+.TP
+.B 0 - 9
+jump to Preset Station 0 - 9
+.TP
+.B shift+[0 - 9]
+jump to Preset Station 10 - 19
+.TP
+.B UP Key
+.br
+tune 0.05 MHz up
+.TP
+.B DOWN Key
+tune 0.05 MHz down
+.TP
+.B >
+increase volume
+.TP
+.B <
+decrease volume
+.TP
+.B m
+mute
+.TP
+.B g
+go to a frequency
+.TP
+.B x
+exit
+.TP
+.B ESC
+.PD 0
+.TP
+.B q
+.TP
+.B e
+mute and exit
+.PD
+.TP
+.B f
+runtime fontchanger
+.IP
+.B - UP Key
+next font
+.br
+.B - DOWN Key
+previous font
+.TP
+.B c
+runtime colorchanger
+.IP
+.B - UP Key
+next window
+.br
+.B - DOWN Key
+previous window
+.br
+.B - f
+cycle foreground color
+.br
+.B - f
+cycle background color
+.br
+.B - b
+toggle bold
+.TP
+.B i
+show some details about your radio-card (or TV-card with radio-tuner)
+.TP
+.B +
+switch to next helppage
+.TP
+.B -
+switch to previous helppage
+.SH DMCRADIORC
+DMCRadio saves the actual configuration to ~/.DMCRadiorc when exiting.
+.PP
+The format of this file is easy to understand. Lines starting with anything
+that is not recognized are ignored.
+.PP
+You can assign a value to a variable with
+.br
+.B Variable=Value
+.br
+The case of the variable-name is ignored.
+.PP
+The config file is divided into four sections:
+.TP
+.B [Style]
+# The font for the frequency-display
+.br
+.B LCDFont=small.raf
+.br
+# Appearence of the Tuner-window
+.br
+# (Can be set with 'c' in the program)
+.br
+# Bold means brighter foreground color
+.br
+.B Tunerfg=6
+.br
+.B Tunerbg=4
+.br
+.B Tunerbold=1
+.br
+# Same for:
+.br
+# Keys (Key Commands)
+.br
+# Stations (Preset Stations)
+.br
+# Status (Statusbar)
+.br
+# Info (Infos about your radio-card)
+.br
+# Scroll (The scroller)
+.br
+# Volume ("<" and ">" from the volume-control)
+.TP
+.B [Stations]
+# On 89.0 MHz is a station called ...
+.br
+# (Up to 256 stations possible)
+.br
+.B 89.0=Radiostation whatever
+.TP
+.B [Buttons]
+# Button 0 points to 89.0 MHz
+.br
+# If the frequency is used in the Stations section,
+.br
+# the name is shown in the Preset-Stations-window.
+.br
+# Otherwise the frequency is shown
+.br
+# (Up to 20 buttons are possible)
+.br
+.B 0=89.0
+.TP
+.B [Misc]
+.br
+# Specifies the radiodevice
+.br
+.B Radiodev=/dev/radio
+.br
+# Specifies the mixerdevice
+.br
+.B Mixerdev=/dev/mixer
+.br
+# Set the Audioinput to cd
+.br
+# (used for volume-control)
+.br
+.B Audioinput=cd
+.br
+# On startup, the tuner is set to 90.05.
+.br
+# If not given, the tuner is set to the
+.br
+# lowest frequency possible.
+.br
+# (On exit, the actual frequency is saved here)
+.B Frequency=90.05
+.br
+.SH SEE ALSO
+.BR radio(1)
+.SH AUTHORS
+.nf
+DMCRadio is written by Sven Hesse (DrMcCoy).

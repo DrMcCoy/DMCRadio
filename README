@@ -1,0 +1,114 @@
+==========================================
+| DMCRadio 1.0.0 by Sven Hesse (DrMcCoy) |
+==========================================
+          (Monday, 03.06.2002)
+
+DMCRadio is a ncurses-based console program for radio tuner cards
+supported by the Video4Linux system. It's like the 'radio' program
+by Gerd Knorr and Juli Merino, but much better (I hope...).
+
+Requirements
+------------
+
+To run DMCRadio, you'll need a kernel with Video4Linux support. 
+Beside, you'll need the ncurses-package.
+And, DMCRadio is only usefull with a radio-card (or a tv-card with
+radio-tuner)
+
+Installation
+------------
+
+1. Untar the source archive
+2. ./configure
+3. make
+4. make install
+5. Make sure, everybody can access your radiodevice (usually /dev/radio)
+6. If you want, put the fonts (*.raf) in /usr/local/share/DMCRadio
+
+Usage
+-----
+
+-h	--help			Show help page and exit
+-m	--mute			Mute and exit
+-r dev	--radiodev dev		Set Radiodevice to dev [/dev/radio]
+-m dev	--mixerdev dev		Set Mixerdevice to dev [/dev/mixer]
+-a inp	--audioinput inp	Set Audioinput to inp [vol]
+-v	--version		Print version and exit
+
+Keyboard Controls
+-----------------
+
+0 - 9		jump to Preset Stations 0 - 9
+shift+[0 - 9]	jump to Preset Stations 10 - 19
+UP Key		tune 0.05 MHz up
+DOWN Key	tune 0.05 MHz down
+>		increase volume
+<		decrease volume
+m		mute
+g		go to a frequency
+x		exit
+ESC, q, e	mute and exit
+f		runtime fontchanger
+  - UP Key	  next font
+  - DOWN Key	  previous font
+c		runtime colorchanger
+  - UP Key	  next window
+  - DOWN Key	  previous window
+  - f		  cycle foreground color
+  - b		  cycle background color
+  - o		  toggle bold
+i		shows some details about your radio-card
++		next helppage
+-		previous helppage
+
+~/.DMCRadiorc
+-------------
+
+[Style]
+
+LCDFont=small.raf		// The font for the frequency-display
+Tunerfg=6			// Appearence of the Tuner-window
+Tunerbg=4			// Can be set with 'c' in the program
+Tunerbold=1			// Bold = Foreground colors brighter
+				// Same for Keys (Key Commands)
+				// Stations (Preset Stations)
+				// Status (Statusbar)
+				// Info (Infos about your radio-card)
+				// Scroll (The scroller)
+				// Volume ("<" and ">" from the volume-control)
+[Stations]
+
+89.0=Radiostation whatever	// On 89.0 MHz is a station called ...
+				// Up to 256 stations possible
+[Buttons]
+
+0=89.0				// Button 0 points to 89.0 MHz
+				// If the frequency is used in the [Stations]
+				// section, the name is shown in the program
+				// Up to 20 buttons are possible
+[Misc]
+
+Radiodev=/dev/radio		// Specifies the radiodevice
+Mixerdev=/dev/mixer		// Specifies the mixerdevice
+Audioinput=cd			// Set the Audioinput to cd
+				// (used for volume-control)
+Frequency=90.05			// On startup, the tuner is set to 90.05
+				// If not given, the tuner is set to the
+				// lowest frequency possible
+
+
+
+The actual config is saved to this config-file when exiting.
+
+Money
+-----
+
+I'm going to school and I'm getting only a few bucks from my parents. So I
+always need money. You don't have to send me some, but if you have too much
+and want to send me some, I won't stop you ;-). Drop me a line
+(SvHe_TM@gmx.de) and I'll give you my address. But:
+1. Please don't send coins. The Money could get stolen.
+2. I would my thankful for Euros, but US-Dollars are okay, too. Please no 
+   "strange" currency like money from Afrika or something. There are high
+   exchange fees.
+3. Please, please don't spam one of my mailboxes (email and snail mail).
