@@ -1,3 +1,9 @@
+Wednesday 28.01.2004 (Version 1.1.1)
+  - fixed wrong version numbers (Thanks to Martin Jansa)
+  - now the radio_getaudiomode function first checks for ASTEREO
+    (if AMONO and ASTEREO is set, the radio is most likely in stereo mode)
+    (Thanks to Martin Jansa)
+
 Sunday 28.12.2003 (Version 1.1.0)
   - dropped that stupid color-struct
     (now using a window- and a windowfunctions-struct)

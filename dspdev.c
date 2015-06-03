@@ -1,5 +1,5 @@
-/* DMCRadio 1.1.0
- * Copyright (c) 2003 Sven Hesse (DrMcCoy)
+/* DMCRadio 1.1.1
+ * Copyright (c) 2003-2004 Sven Hesse (DrMcCoy)
  *
  * This file is part of DMCRadio and is distributed under the terms of
  * the GNU General Public Licence. See COPYING for more informations.

@@ -1,5 +1,5 @@
-/* DMCRadio 1.1.0
- * Copyright (c) 2003 Sven Hesse (DrMcCoy)
+/* DMCRadio 1.1.1
+ * Copyright (c) 2003-2004 Sven Hesse (DrMcCoy)
  *
  * This file is part of DMCRadio and is distributed under the terms of
  * the GNU General Public Licence. See COPYING for more informations.
@@ -53,8 +53,8 @@ int radio_getflags(void)
 
 int radio_getaudiomode(void)
 {
-	if(AMONO) return 1;
-	else if(ASTEREO) return 2;
+	if(ASTEREO) return 2;
+	else if(AMONO) return 1;
 	else return 0;
 }
 
