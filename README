@@ -1,7 +1,7 @@
 ==========================================
 | DMCRadio 1.0.0 by Sven Hesse (DrMcCoy) |
 ==========================================
-          (Monday, 03.06.2002)
+          (Thursday, 18.07.2002)
 
 DMCRadio is a ncurses-based console program for radio tuner cards
 supported by the Video4Linux system. It's like the 'radio' program
@@ -45,6 +45,7 @@ DOWN Key	tune 0.05 MHz down
 >		increase volume
 <		decrease volume
 m		mute
+m		denoiser (mutes radio "between" two stations)
 g		go to a frequency
 x		exit
 ESC, q, e	mute and exit
@@ -95,6 +96,7 @@ Audioinput=cd			// Set the Audioinput to cd
 Frequency=90.05			// On startup, the tuner is set to 90.05
 				// If not given, the tuner is set to the
 				// lowest frequency possible
+Denoiser=1			// Mutes radio "between" to stations
 
 
 

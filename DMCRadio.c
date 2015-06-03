@@ -56,8 +56,8 @@ static struct colors radiocolors;
 static char lcdchars[11][5][7], lcdpoint[5][4], font[256], dir[256], dira[256];
 static char mixerdev[256], rdev[256], mdev[256];
 static double buttons[20], freqmin, freqmax, ffreq;
-static int fd, lcdcharwidth, lcdpointwidth, exitscroller = 0;
-static int actualhelppage = 0, helppagecount = 2;
+static int fd, lcdcharwidth, lcdpointwidth, exitscroller = 0, denoiser = 0;
+static int actualhelppage = 0, helppagecount = 2, hasexit = 0, radiomute = 0;
 static pthread_t *scrollthread;
 extern int errno;
 
@@ -296,6 +296,7 @@ int saveconf(void)
 		fprintf(configfile,"Mixerdev=%s\n",mdev);
 		fprintf(configfile,"Audioinput=%s\n",mixerdev);
 		fprintf(configfile,"Frequency=%.2f\n",ffreq);
+		fprintf(configfile,"Denoiser=%d\n",denoiser);
 	}
 	fclose(configfile);
 	return 0;
@@ -519,6 +520,7 @@ int handleconf(void)
 			if(!strcmp(suffix,"MIXERDEV") && !strcmp(mdev,"")) strcpy(mdev,prefix);
 			if(!strcmp(suffix,"AUDIOINPUT") && !strcmp(mixerdev,""))
 				strcpy(mixerdev,prefix);
+			if(!strcmp(suffix,"DENOISER")) denoiser = atoi(prefix);
 		}
 	}
 	fclose(configfile);
@@ -608,9 +610,10 @@ int drawhelppage(int helppage)
 			mvwprintw(helpw,0,31,"(-)");
 			mvwprintw(helpw,6,31,"(+)");
 			mvwprintw(helpw,1,1," m         - mute");
-			mvwprintw(helpw,2,1," f         - chance font");
-			mvwprintw(helpw,3,1," c         - change colors");
-			mvwprintw(helpw,4,1," i         - infos about card");
+			mvwprintw(helpw,2,1," d         - denoiser");
+			mvwprintw(helpw,3,1," f         - chance font");
+			mvwprintw(helpw,4,1," c         - change colors");
+			mvwprintw(helpw,5,1," i         - infos about card");
 			break;
 		case 23:
 			mvwprintw(helpw,1,1," UP Key    - next window ");
@@ -697,6 +700,11 @@ int drawsignal(void)
 	{
 		mvwprintw(freqw,0,i+31,"%s", signal>i ? "*" : " ");
 	}
+	if(denoiser)
+	{
+		if(signal == 1) radio_mute(TRUE);
+		else if(signal != 1 && !radiomute && !hasexit) radio_mute(FALSE);
+	}
 	mvwprintw(freqw,6,10," Volume: [<] %3d%% [>] ",
 			(int)(((float)mixer_getvol(mixerdev)/(float)25600+0.005)*100));
 	init_pair(8,radiocolors.volume_foreground,radiocolors.volume_background);
@@ -775,7 +783,7 @@ int stdfont(void)
 
 int mainloop(void)
 {
-	int keywhile = 0, radiomute = 0, key, globreturn;
+	int keywhile = 0, key, globreturn;
 	float ifreq;
 	glob_t fonts;
 
@@ -915,6 +923,10 @@ int mainloop(void)
 			case 'm':
 				radiomute = !radiomute;
 				radio_mute(radiomute);
+				break;
+			case 'd':
+				denoiser = !denoiser;
+				if(!radiomute && !denoiser) radio_mute(FALSE);
 				break;
 			case 'c':
 				exitscroller = 1;
@@ -1215,6 +1227,7 @@ int mainloop(void)
 				doupdate();
 				break;
 			case '': case 'q': case 'e':
+				hasexit = 1;
 				radio_mute(TRUE);
 				break;
 		}

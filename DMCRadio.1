@@ -63,6 +63,9 @@ decrease volume
 .B m
 mute
 .TP
+.B d
+denoiser (mutes radio "between" two stations)
+.TP
 .B g
 go to a frequency
 .TP
@@ -202,6 +205,10 @@ The config file is divided into four sections:
 .br
 # (On exit, the actual frequency is saved here)
 .B Frequency=90.05
+.br
+# Mutes radio "between" two stations
+.br
+.B Denoiser=1
 .br
 .SH SEE ALSO
 .BR radio(1)
