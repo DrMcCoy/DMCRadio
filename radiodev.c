@@ -19,7 +19,7 @@
 #include <machine/ioctl_bt848.h>
 #endif
 #else
-#include <linux/videodev.h>
+#include <libv4l1-videodev.h>
 #endif
 
 #define FALSE 0

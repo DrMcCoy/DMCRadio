@@ -11,7 +11,7 @@ CFLAGS="-DYEAR=\"\\\"@YEAR@\\\"\" -DDATE=\"\\\"@DATE@\\\"\" -DDAY=\"\\\"@DAY@\\\
 LIBS="-lpthread -lm"
 
 AC_HEADER_STDC
-AC_CHECK_HEADERS(linux/videodev.h,,AC_MSG_ERROR(linux/videodev.h doesn't exist. Please install a newer version of glibc-devel))
+AC_CHECK_HEADERS(libv4l1-videodev.h,,AC_MSG_ERROR(libv4l1-videodev.h doesn't exist))
 AC_CHECK_LIB(ncurses,main,,AC_MSG_ERROR(Couldn't find ncurses. Please install and try again),,)
 
 VERSION="1.1.4"
