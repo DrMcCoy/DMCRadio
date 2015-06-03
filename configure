@@ -692,7 +692,7 @@ fi
 
 PACKAGE=DMCRadio
 
-VERSION=1.1.3
+VERSION=1.1.4
 
 if test "`cd $srcdir && pwd`" != "`pwd`" && test -f $srcdir/config.status; then
   { echo "configure: error: source directory already configured; run "make distclean" there first" 1>&2; exit 1; }
@@ -1239,7 +1239,7 @@ else
 fi
 
 
-CFLAGS="-DYEAR=\"\\\"@YEAR@\\\"\" -DDATE=\"\\\"@DATE@\\\"\" -DDAY=\"\\\"@DAY@\\\"\" -Wall"
+CFLAGS="-DYEAR=\"\\\"@YEAR@\\\"\" -DDATE=\"\\\"@DATE@\\\"\" -DDAY=\"\\\"@DAY@\\\"\" -DPREFIX=\"\\\"@PREFIX@\\\"\" -Wall"
 LIBS="-lpthread -lm"
 
 echo $ac_n "checking how to run the C preprocessor""... $ac_c" 1>&6
@@ -1512,10 +1512,12 @@ else
 fi
 
 
-VERSION="1.1.3"
+VERSION="1.1.4"
 YEAR="2003-2004"
-DATE="18.12.2004"
-DAY="Saturday"
+DATE="31.12.2004"
+DAY="Friday"
+PREFIX=${prefix}
+
 
 
 
@@ -1634,7 +1636,7 @@ done
 ac_given_srcdir=$srcdir
 ac_given_INSTALL="$INSTALL"
 
-trap 'rm -fr `echo "Makefile" | sed "s/:[^ ]*//g"` conftest*; exit 1' 1 2 15
+trap 'rm -fr `echo "Makefile fonts/Makefile" | sed "s/:[^ ]*//g"` conftest*; exit 1' 1 2 15
 EOF
 cat >> $CONFIG_STATUS <<EOF
 
@@ -1683,6 +1685,7 @@ s%@CPP@%$CPP%g
 s%@YEAR@%$YEAR%g
 s%@DATE@%$DATE%g
 s%@DAY@%$DAY%g
+s%@PREFIX@%$PREFIX%g
 
 CEOF
 EOF
@@ -1724,7 +1727,7 @@ EOF
 
 cat >> $CONFIG_STATUS <<EOF
 
-CONFIG_FILES=\${CONFIG_FILES-"Makefile"}
+CONFIG_FILES=\${CONFIG_FILES-"Makefile fonts/Makefile"}
 EOF
 cat >> $CONFIG_STATUS <<\EOF
 for ac_file in .. $CONFIG_FILES; do if test "x$ac_file" != x..; then

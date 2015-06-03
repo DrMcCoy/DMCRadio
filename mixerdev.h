@@ -1,9 +1,12 @@
-/* DMCRadio 1.1.3
+/* DMCRadio 1.1.4
  * Copyright (c) 2003-2004 Sven Hesse (DrMcCoy)
  *
  * This file is part of DMCRadio and is distributed under the terms of
  * the GNU General Public Licence. See COPYING for more informations.
  */
+
+#ifndef MIXERDEV_H
+#define MIXERDEV_H
 
 int mixer_getnrdevices(void);
 int mixer_init(char *device);
@@ -20,3 +23,5 @@ int mixer_setvol(char *device, int volume);
 int mixer_incvol(char *device, int value);
 int mixer_decvol(char *device, int value);
 int mixer_deinit(void);
+
+#endif // MIXERDEV_H

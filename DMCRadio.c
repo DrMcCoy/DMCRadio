@@ -1,4 +1,4 @@
-/* DMCRadio 1.1.3
+/* DMCRadio 1.1.4
  * Copyright (c) 2003-2004 Sven Hesse (DrMcCoy)
  *
  * This file is part of DMCRadio and is distributed under the terms of
@@ -66,8 +66,8 @@ struct extracol
 };
 
 static struct station stations[256];
-static char lcdchars[11][5][7], lcdpoint[5][4], font[256], dir[256], dira[256];
-static char *cvolctrl=NULL, rdev[256], mdev[256], ddev[256], recordf[13];
+static char lcdchars[11][5][7], lcdpoint[5][4], font[4096], dir[4096], dira[4096];
+static char *cvolctrl=NULL, rdev[4096], mdev[4096], ddev[4096], recordf[13];
 static char exitscroll=0, exitrecord=1, hasexit=0, radiomute=0, mdist;
 static char aadjust=0, record=0, **mdevns, **mdevls, pml=1;
 static double buttons[20], ffreq;
@@ -97,6 +97,7 @@ static char empty[] =
 
 void printconshelp(void);
 void init(void);
+void checkscr(void);
 void initwindows(void);
 void drawwindowf(int id);
 void handle_extracols(int id);
@@ -227,6 +228,7 @@ void init(void)
 	if(cvolctrl) mixerdev = mixer_getdevnr(cvolctrl);
 	if(mixerdev == -1) mixerdev = mixer_getfirstsupdevnr();
 	initscr();
+	checkscr();
 	printf("[?25l");
 	start_color();
 	cbreak();
@@ -237,6 +239,22 @@ void init(void)
 	if((ffreq < radiofreqmin) || (ffreq > radiofreqmax)) ffreq = radiofreqmin;
 	dsp_chn = 2;
 	dsp_rate = 44100;
+}
+
+void checkscr(void)
+{
+	int i;
+	if((LINES < 24) || (COLS < 80))
+	{
+		endwin();
+		fprintf(stderr, "Terminal too small, need at least 80x24 characters!\n");
+		exit(-1);
+	}
+	if(LINES > 25)
+		for(i=0;i<numwin;i++) windows[i].y += (LINES-25)/2;
+	else if(LINES == 24) windows[4].x = windows[4].y = -1;
+	if(COLS > 80)
+		for(i=0;i<numwin;i++) windows[i].x += (COLS-80)/2;
 }
 
 void initwindows(void)
@@ -529,7 +547,10 @@ void loadconf(void)
 
 	initwindows(); // <====
 	snprintf(config, sizeof(config), "%s/.DMCRadiorc", getenv("HOME"));
-	strcpy(dir, "/usr/local/share/DMCRadio/");
+	if(!strcmp(PREFIX, "NONE"))
+		strcpy(dir, "/usr/local/share/DMCRadio/");
+	else
+		snprintf(dir, 4096, "%s/share/DMCRadio/", PREFIX);
 	strcpy(font, "small.raf");
 
 	configfile = fopen(config, "r");
@@ -549,7 +570,7 @@ void loadconf(void)
 				|| (buffer[0] == '='))
 			continue;
 		strncpy(suffix, strupper(strtok(buffer, "=")), sizeof(suffix));
-		strncpy(buffer, strtok(NULL, ""), sizeof(buffer));
+		memmove(buffer, strtok(NULL, ""), sizeof(buffer));
 		if(strlen(buffer) == 1) continue;
 		strncpy(prefix, strtok(buffer, "\n"), sizeof(prefix));
 		if(!section)
@@ -1058,7 +1079,8 @@ void mainloop(void)
 	radio_tune(ffreq);
 	radio_mute(FALSE);
 
-	pthread_create((pthread_t*) &scrollthread, NULL, doscroll, 0);
+	if((windows[winfuncs[4].win].x > -1) && ((windows[winfuncs[4].win].y > -1)))
+		pthread_create((pthread_t*) &scrollthread, NULL, doscroll, 0);
 	usleep(60000);
 	drawaudiomode();
 	pthread_mutex_lock(&nclock);

@@ -1,4 +1,4 @@
-/* DMCRadio 1.1.3
+/* DMCRadio 1.1.4
  * Copyright (c) 2003-2004 Sven Hesse (DrMcCoy)
  *
  * This file is part of DMCRadio and is distributed under the terms of

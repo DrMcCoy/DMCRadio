@@ -1,7 +1,7 @@
 ==========================================
-| DMCRadio 1.1.3 by Sven Hesse (DrMcCoy) |
+| DMCRadio 1.1.4 by Sven Hesse (DrMcCoy) |
 ==========================================
-        (Saturday, 18.12.2004)
+          (Friday, 31.12.2004)
 
 DMCRadio is a ncurses-based console program for radio tuner cards
 supported by the Video4Linux system. It's like the 'radio' program
@@ -25,7 +25,6 @@ Installation
 3. make
 4. make install
 5. Make sure, everybody can access your radiodevice (usually /dev/radio)
-6. If you want, put the fonts (*.raf) in /usr/local/share/DMCRadio
 
 Usage
 -----
