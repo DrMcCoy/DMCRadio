@@ -1,3 +1,6 @@
+Thursday 12.02.2004 (Version 1.1.2)
+  - fixed segfault if there's no ~/.DMCRadiorc (Thanks to Roberto De Leo)
+
 Wednesday 28.01.2004 (Version 1.1.1)
   - fixed wrong version numbers (Thanks to Martin Jansa)
   - now the radio_getaudiomode function first checks for ASTEREO

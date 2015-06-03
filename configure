@@ -692,7 +692,7 @@ fi
 
 PACKAGE=DMCRadio
 
-VERSION=1.1.1
+VERSION=1.1.2
 
 if test "`cd $srcdir && pwd`" != "`pwd`" && test -f $srcdir/config.status; then
   { echo "configure: error: source directory already configured; run "make distclean" there first" 1>&2; exit 1; }
@@ -1512,10 +1512,10 @@ else
 fi
 
 
-VERSION="1.1.1"
+VERSION="1.1.2"
 YEAR="2004"
-DATE="28.01.2004"
-DAY="Wednesday"
+DATE="12.02.2004"
+DAY="Thursday"
 
 
 

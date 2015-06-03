@@ -1,4 +1,4 @@
-/* DMCRadio 1.1.1
+/* DMCRadio 1.1.2
  * Copyright (c) 2003-2004 Sven Hesse (DrMcCoy)
  *
  * This file is part of DMCRadio and is distributed under the terms of
@@ -220,7 +220,7 @@ void init(void)
 		exit(-1);
 	}
 	
-	if(strlen(cvolctrl)) mixerdev = mixer_getdevnr(cvolctrl);
+	if(cvolctrl) mixerdev = mixer_getdevnr(cvolctrl);
 	if(mixerdev == -1) mixerdev = mixer_getfirstsupdevnr();
 	free(cvolctrl);
 	initscr();
@@ -526,10 +526,11 @@ void loadconf(void)
 	strcpy(dir, "/usr/local/share/DMCRadio/");
 	strcpy(font, "small.raf");
 
+	initwindows(); // <====
+
 	configfile = fopen(config, "r");
 	if(!(configfile = fopen(config, "r"))) return;
 	
-	initwindows(); // <====
 
 	while(!feof(configfile))
 	{
