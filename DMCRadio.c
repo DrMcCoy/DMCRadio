@@ -147,7 +147,7 @@ int main(int argc, char *argv[])
 					|| (!strcmp(argv[thisarg], "--version")))
 			{
 				printf("DMCRadio %s (c) %s by Sven Hesse (DrMcCoy) ", VERSION, YEAR);
-				printf("<SvHe_TM@gmx.de>\n");
+				printf("<drmccoy@drmccoy.de>\n");
 				printf("%s, %s\n", DAY, DATE);
 				exit(-1);
 			}
