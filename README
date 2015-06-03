@@ -3,6 +3,11 @@
 ==========================================
           (Friday, 31.12.2004)
 
+[NOTE: DMCRadio is over 10 years old now. It's buggy, ugly, pretty
+embarrasing and probably damn near useless by now. It's only
+provided here for historical reasons. Don't hope for any support.
+You are, however, free to laugh at the code.]
+
 DMCRadio is a ncurses-based console program for radio tuner cards
 supported by the Video4Linux system. It's like the 'radio' program
 by Gerd Knorr and Juli Merino, but much better (I hope...).
@@ -123,16 +128,3 @@ MaxRecSize=10485760		// Maximal filesize for recording
 				// continue recording in a new file
 
 The current config is saved to this config-file on exit.
-
-Money
------
-
-I'm going to school and I'm getting only a few bucks from my parents. So I
-always need money. You don't have to send me some, but if you have too much
-and want to send me money, I won't stop you ;-). Drop me a line
-(SvHe_TM@gmx.de) and I'll give you my address. But:
-1. Please don't send coins. The Money could get stolen.
-2. I would my thankful for Euros, but US-Dollars are okay, too. Please no 
-   "strange" currency like money from Afrika or something. There are high
-   exchange fees.
-3. Please, please don't spam one of my mailboxes (email and snail mail).
