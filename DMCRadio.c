@@ -1,4 +1,4 @@
-/* DMCRadio 1.1.2
+/* DMCRadio 1.1.3
  * Copyright (c) 2003-2004 Sven Hesse (DrMcCoy)
  *
  * This file is part of DMCRadio and is distributed under the terms of
@@ -195,7 +195,11 @@ void init(void)
 {
 	int i, j;
 
+#ifdef __FreeBSD__
+	if(!strlen(rdev)) strcpy(rdev, "/dev/tuner");
+#else
 	if(!strlen(rdev)) strcpy(rdev, "/dev/radio");
+#endif
 	if(!strlen(mdev)) strcpy(mdev, "/dev/mixer");
 	if(!strlen(ddev)) strcpy(ddev, "/dev/dsp");
 	errno = 0;
@@ -222,7 +226,6 @@ void init(void)
 	
 	if(cvolctrl) mixerdev = mixer_getdevnr(cvolctrl);
 	if(mixerdev == -1) mixerdev = mixer_getfirstsupdevnr();
-	free(cvolctrl);
 	initscr();
 	printf("[?25l");
 	start_color();
@@ -334,7 +337,7 @@ void drawwindowf(int id)
 			mvwprintw(windows[winfuncs[id].win].win, 0, 1, " Statusbar ");
 			mvwprintw(windows[winfuncs[id].win].win, 2, 2,
 					"< DMCRadio %s >", VERSION);
-			mvwprintw(windows[winfuncs[id].win].win, 2, 42,
+			mvwprintw(windows[winfuncs[id].win].win, 2, 46-strlen(YEAR),
 					"< (c) %s by Sven Hesse (DrMcCoy) >", YEAR);
 			break;
 		case 5:
@@ -391,8 +394,10 @@ void setuplayout(void)
 	int i;
 
 	for(i=0;i<numwin;i++)
+	{
 		windows[i].win =
 			newwin(windows[i].h, windows[i].w, windows[i].y, windows[i].x);
+	}
 	for(i=0;i<numwin;i++) drawwindowf(i);
 	drawwindowf(3);
 	drawhelppage(curhelpp);
@@ -522,11 +527,10 @@ void loadconf(void)
 	FILE *configfile, *testfile;
 	char suffix[256], prefix[256], config[256], testfont[256];
 
+	initwindows(); // <====
 	snprintf(config, sizeof(config), "%s/.DMCRadiorc", getenv("HOME"));
 	strcpy(dir, "/usr/local/share/DMCRadio/");
 	strcpy(font, "small.raf");
-
-	initwindows(); // <====
 
 	configfile = fopen(config, "r");
 	if(!(configfile = fopen(config, "r"))) return;

@@ -1,4 +1,4 @@
-/* DMCRadio 1.1.2
+/* DMCRadio 1.1.3
  * Copyright (c) 2003-2004 Sven Hesse (DrMcCoy)
  *
  * This file is part of DMCRadio and is distributed under the terms of
@@ -11,15 +11,29 @@
 #include <sys/ioctl.h>
 #include <errno.h>
 #include <unistd.h>
+#ifdef __FreeBSD__
+#include <sys/param.h>
+#if __FreeBSD_version >= 502100
+#include <dev/bktr/ioctl_bt848.h>
+#else
+#include <machine/ioctl_bt848.h>
+#endif
+#else
 #include <linux/videodev.h>
+#endif
 
 #define FALSE 0
 #define TRUE 1
 
 static int radiodev;
 extern int errno;
+
+#ifdef __FreeBSD__
+static int tuner, audio;
+#else
 static struct video_tuner tuner;
 static struct video_audio audio;
+#endif
 
 int LOW, AMONO, ASTEREO, SMUTE, SMUTEA, SVOLUME, SBASS, STREBLE;
 double radiofreqmin, radiofreqmax;
@@ -35,6 +49,19 @@ int radio_init(char *device)
 
 int radio_getflags(void)
 {
+#ifdef __FreeBSD__
+	ioctl(radiodev, TVTUNER_GETSTATUS, &tuner);
+	ioctl(radiodev, RADIO_GETMODE, &audio);
+	AMONO = ((audio & RADIO_MONO) ? TRUE : FALSE);
+	ASTEREO = (! AMONO);
+	ioctl(radiodev, BT848_GAUDIO, &audio);
+	SMUTE = ((audio & AUDIO_MUTE) ? TRUE : FALSE);
+	SMUTEA = TRUE;
+	SVOLUME = FALSE;
+	radiofreqmin = 87.50;
+	radiofreqmax = 108.00;
+	return 0;
+#else
 	ioctl(radiodev, VIDIOCGTUNER, &tuner);
 	ioctl(radiodev, VIDIOCGAUDIO, &audio);
 	tuner.tuner = 0;
@@ -49,6 +76,7 @@ int radio_getflags(void)
 	radiofreqmin = tuner.rangelow / (LOW ? 16000 : 16);
 	radiofreqmax = tuner.rangehigh / (LOW ? 16000 : 16);
 	return 0;
+#endif
 }
 
 int radio_getaudiomode(void)
@@ -60,21 +88,43 @@ int radio_getaudiomode(void)
 
 int radio_getsignal(void)
 {
+#ifdef __FreeBSD__
+	ioctl(radiodev, TVTUNER_GETSTATUS, &tuner);
+	return tuner & 0x07;
+#else
 	ioctl(radiodev,VIDIOCGTUNER,&tuner);
 	return tuner.signal>>13;
+#endif
 }
 
 int radio_tune(double frequency)
 {
 	unsigned long freq;
 
+#ifdef __FreeBSD__
+	freq = frequency * 100;
+	ioctl(radiodev,RADIO_SETFREQ,&freq);
+#else
 	freq = frequency * (LOW ? 16000 : 16);
 	ioctl(radiodev,VIDIOCSFREQ,&freq);
+#endif
 	return 0;
 }
 
 int radio_mute(int mute)
 {
+#ifdef __FreeBSD__
+	if(mute)
+	{
+		audio = AUDIO_MUTE;
+		ioctl(radiodev, BT848_SAUDIO, &audio);
+	}
+	else
+	{
+		audio = AUDIO_UNMUTE;
+		ioctl(radiodev, BT848_SAUDIO, &audio);
+	}
+#else
 	if(mute)
 	{
 		audio.flags = VIDEO_AUDIO_MUTE;
@@ -87,6 +137,7 @@ int radio_mute(int mute)
 		audio.volume = 65535;
 		ioctl(radiodev, VIDIOCSAUDIO,&audio);
 	}
+#endif
 	return 0;
 }
 

@@ -2,7 +2,7 @@
 # Generated automatically by configure.
 # Run this file to recreate the current configuration.
 # This directory was configured as follows,
-# on host terminal:
+# on host Tchibo:
 #
 # ./configure 
 #
@@ -40,7 +40,7 @@ s%@CFLAGS@%-DYEAR="\"@YEAR@\"" -DDATE="\"@DATE@\"" -DDAY="\"@DAY@\"" -Wall%g
 s%@CPPFLAGS@%%g
 s%@CXXFLAGS@%-g -O2%g
 s%@FFLAGS@%%g
-s%@DEFS@% -DPACKAGE=\"DMCRadio\" -DVERSION=\"1.1.2\" -DSTDC_HEADERS=1 -DHAVE_LINUX_VIDEODEV_H=1 -DHAVE_LIBNCURSES=1 %g
+s%@DEFS@% -DPACKAGE=\"DMCRadio\" -DVERSION=\"1.1.3\" -DSTDC_HEADERS=1 -DHAVE_LINUX_VIDEODEV_H=1 -DHAVE_LIBNCURSES=1 %g
 s%@LDFLAGS@%%g
 s%@LIBS@%-lncurses -lpthread -lm%g
 s%@exec_prefix@%${prefix}%g
@@ -62,7 +62,7 @@ s%@INSTALL_PROGRAM@%${INSTALL}%g
 s%@INSTALL_SCRIPT@%${INSTALL_PROGRAM}%g
 s%@INSTALL_DATA@%${INSTALL} -m 644%g
 s%@PACKAGE@%DMCRadio%g
-s%@VERSION@%1.1.2%g
+s%@VERSION@%1.1.3%g
 s%@ACLOCAL@%aclocal-1.4%g
 s%@AUTOCONF@%autoconf%g
 s%@AUTOMAKE@%automake-1.4%g
@@ -72,9 +72,9 @@ s%@SET_MAKE@%%g
 s%@CC@%gcc%g
 s%@CXX@%c++%g
 s%@CPP@%gcc -E%g
-s%@YEAR@%2004%g
-s%@DATE@%12.02.2004%g
-s%@DAY@%Thursday%g
+s%@YEAR@%2003-2004%g
+s%@DATE@%18.12.2004%g
+s%@DAY@%Saturday%g
 
 CEOF
 

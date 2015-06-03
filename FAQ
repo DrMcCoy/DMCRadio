@@ -1,3 +1,9 @@
+Q: DMCRadio says "Can't open /dev/mixer: No such device", but my souncard
+   is working with other programs!
+A: DMCRadio uses linux/souncard.h, an OSS-header. If you're using ALSA, you
+   have to use the OSS-emulation-modules (snd_mixer_oss for general use and
+   snd_pcm_oss if you want to record something).
+
 Q: Why don't you add recording in mp3 (ogg, etc...)?
 A: I think it's quite useless because when you record from radio,
    you've always got some moderator-guy or some advertising
@@ -6,11 +12,11 @@ A: I think it's quite useless because when you record from radio,
    things out and because mp3/ogg/... are lossy, that wouldn't only
    be a waste of time but also of quality.
 
-Q: Hey! This programm looks like 'radio' !
+Q: Hey! This programm looks like 'radio'!
 A: Well, ...
 
 Q: The code sux!
 A: I know, but ... who cares? It works!
 
 Q: Your english sux!
-A: I'm a 18-years-old german pupil... what did you expect???
+A: I'm a 19-years-old german pupil... what did you expect???

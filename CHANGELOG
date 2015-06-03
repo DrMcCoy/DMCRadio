@@ -1,5 +1,8 @@
+Saturday 18.12.2004 (Version 1.1.3)
+  - thanks to Vladimir Kushnir, DMCRadio should work under FreeBSD(-CURRENT) now
+
 Thursday 12.02.2004 (Version 1.1.2)
-  - fixed segfault if there's no ~/.DMCRadiorc (Thanks to Roberto De Leo)
+    - fixed segfault if there's no ~/.DMCRadiorc (Thanks to Roberto De Leo)
 
 Wednesday 28.01.2004 (Version 1.1.1)
   - fixed wrong version numbers (Thanks to Martin Jansa)
