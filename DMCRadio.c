@@ -1,5 +1,5 @@
-/* DMCRadio 1.0.0
- * Copyright (c) 2002 Sven Hesse (DrMcCoy)
+/* DMCRadio 1.0.2
+ * Copyright (c) 2003 Sven Hesse (DrMcCoy)
  *
  * This file is part of DMCRadio and is distributed under the terms of
  * the GNU General Public Licence. See COPYING for more informations.
@@ -55,11 +55,12 @@ static struct station stations[256];
 static struct colors radiocolors;
 static char lcdchars[11][5][7], lcdpoint[5][4], font[256], dir[256], dira[256];
 static char mixerdev[256], rdev[256], mdev[256];
-static double buttons[20], freqmin, freqmax, ffreq;
+static double buttons[20], ffreq;
 static int fd, lcdcharwidth, lcdpointwidth, exitscroller = 0, denoiser = 0;
 static int actualhelppage = 0, helppagecount = 2, hasexit = 0, radiomute = 0;
 static pthread_t *scrollthread;
-extern int errno;
+extern int errno, LOW, AMONO, ASTEREO, SVOLUME, SBASS, STREBLE;
+extern double radiofreqmin, radiofreqmax;
 
 int printconshelp(void);
 int init(void);
@@ -115,13 +116,13 @@ int main(int argc, char *argv[])
 			}
 			if(!strcmp(argv[thisarg],"-r") || !strcmp(argv[thisarg],"--radiodev"))
 				if(argc>thisarg)
-					strcpy(rdev,argv[thisarg+1]);
+					strncpy(rdev,argv[thisarg+1], sizeof(rdev));
 			if(!strcmp(argv[thisarg],"-x") || !strcmp(argv[thisarg],"--mixerdev"))
 				if(argc>thisarg)
-					strcpy(mdev,argv[thisarg+1]);
+					strncpy(mdev,argv[thisarg+1], sizeof(mdev));
 			if(!strcmp(argv[thisarg],"-a") || !strcmp(argv[thisarg],"--audioinput"))
 				if(argc>thisarg)
-					strcpy(mixerdev,argv[thisarg+1]);
+					strncpy(mixerdev,argv[thisarg+1], sizeof(mixerdev));
 		}
 	}
 
@@ -176,17 +177,16 @@ int init(void)
 	}
 	if(!mixer_hasdev(mixerdev)) strcpy(mixerdev,"vol");
 	
-	radio_getflags();
 	printf("[?25l");
 	initscr();
 	start_color();
 	cbreak();
 	noecho();
 
-	freqmin = radio_getlowestfrequency();
-	freqmax = radio_gethighestfrequency();
-	if((ffreq < freqmin) || (ffreq > freqmax))
-		ffreq = freqmin;
+	radiofreqmin = radiofreqmin;
+	radiofreqmax = radiofreqmax;
+	if((ffreq < radiofreqmin) || (ffreq > radiofreqmax))
+		ffreq = radiofreqmin;
 	return 0;
 }
 
@@ -214,9 +214,8 @@ int setuplayout(void)
 	mvwprintw(stationw,0,1," Preset Stations ");
 	drawstatus();
 	drawhelppage(actualhelppage);
-	strcpy(dira,dir);
-	strcat(dira,font);
-	strcpy(font,dira);
+	snprintf(dira,sizeof(dira),"%s%s",dir,font);
+	strncpy(font,dira,sizeof(font));
 	testfile = fopen(font,"r");
 	if(testfile == NULL)
 		stdfont();
@@ -254,8 +253,7 @@ int saveconf(void)
 	char config[256];
 	FILE *configfile;
 
-	strcpy(config,(char *) getenv("HOME"));
-	strcat(config,"/.DMCRadiorc");
+	snprintf(config,sizeof(config),"%s/.DMCRadiorc",getenv("HOME"));
 	configfile = fopen(config,"w");
 
 	if(configfile != NULL)
@@ -403,8 +401,7 @@ int handleconf(void)
 	FILE *configfile, *testfile;
 	char suffix[256], prefix[256], config[256], testfont[256];
 
-	strcpy(config,(char *) getenv("HOME"));
-	strcat(config,"/.DMCRadiorc");
+	snprintf(config,sizeof(config),"%s/.DMCRadiorc",getenv("HOME"));
 	strcpy(dir,"/usr/local/share/DMCRadio/");
 	strcpy(font,"small.raf");
 
@@ -426,19 +423,18 @@ int handleconf(void)
 		if(strchr(buffer,'=') == NULL) continue;
 		if(strchr(buffer,'\n') == NULL) continue;
 		if(buffer[0] == '=') continue;
-		strcpy(suffix,strupper(strtok(buffer,"=")));
-		strcpy(buffer,strtok(NULL,""));
+		strncpy(suffix,strupper(strtok(buffer,"=")),sizeof(suffix));
+		strncpy(buffer,strtok(NULL,""),sizeof(buffer));
 		if(strlen(buffer) == 1) continue;
-		strcpy(prefix,strtok(buffer,"\n"));
+		strncpy(prefix,strtok(buffer,"\n"),sizeof(prefix));
 		if(section == 0)
 		{
 			if(!strcmp(suffix,"LCDFONT") && strcmp(prefix,""))
 			{
-				strcpy(testfont,dir);
-				strcat(testfont,prefix);
+				snprintf(testfont,sizeof(testfont),"%s%s",dir,prefix);
 				if((testfile = fopen(testfont,"r")) != NULL)
 				{
-					strcpy(font,prefix);
+					strncpy(font,prefix,sizeof(font));
 					fclose(testfile);
 				}
 				errno=0;
@@ -499,7 +495,7 @@ int handleconf(void)
 			{
 				prefix[78] = '\0';
 				sscanf(suffix,"%lf",&stations[k].frequency);
-				strcpy(stations[k].name,prefix);
+				strncpy(stations[k].name,prefix,sizeof(stations[k].name));
 				k++;
 			}
 		}
@@ -516,10 +512,12 @@ int handleconf(void)
 		else if(section == 3)
 		{
 			if(!strcmp(suffix,"FREQUENCY")) sscanf(prefix,"%lf",&ffreq);
-			if(!strcmp(suffix,"RADIODEV") && !strcmp(rdev,"")) strcpy(rdev,prefix);
-			if(!strcmp(suffix,"MIXERDEV") && !strcmp(mdev,"")) strcpy(mdev,prefix);
+			if(!strcmp(suffix,"RADIODEV") && !strcmp(rdev,""))
+				strncpy(rdev,prefix,sizeof(rdev));
+			if(!strcmp(suffix,"MIXERDEV") && !strcmp(mdev,""))
+				strncpy(mdev,prefix,sizeof(mdev));
 			if(!strcmp(suffix,"AUDIOINPUT") && !strcmp(mixerdev,""))
-				strcpy(mixerdev,prefix);
+				strncpy(mixerdev,prefix,sizeof(mixerdev));
 			if(!strcmp(suffix,"DENOISER")) denoiser = atoi(prefix);
 		}
 	}
@@ -584,7 +582,7 @@ int readfont(char *file)
 	}
 
 	for(i=0;i<5;i++)
-		strcpy(lcdchars[10][i],"			");
+		strncpy(lcdchars[10][i],"			",sizeof(lcdchars[10][i]));
 
 	fclose(fontfile);
 	return 0;
@@ -804,12 +802,12 @@ int mainloop(void)
 
 			case KEY_UP:
 				ffreq = ffreq + 0.050000;
-				if (ffreq > freqmax) ffreq = freqmax;
+				if (ffreq > radiofreqmax) ffreq = radiofreqmax;
 				radio_tune(ffreq);
 				break;
 			case KEY_DOWN:
 				ffreq = ffreq - 0.050000;
-				if (ffreq < freqmin) ffreq = freqmin;
+				if (ffreq < radiofreqmin) ffreq = radiofreqmin;
 				radio_tune(ffreq);
 				break;
 			case '>':
@@ -827,84 +825,84 @@ int mainloop(void)
 				mvwscanw(statusw,1,19,"%f",&ifreq);
 				noecho();
 				ffreq = (float) ifreq;
-				if((double) ffreq > (double) freqmax) ffreq = freqmax;
-				if((double) ffreq < (double) freqmin) ffreq = freqmin;
+				if((double) ffreq > (double) radiofreqmax) ffreq = radiofreqmax;
+				if((double) ffreq < (double) radiofreqmin) ffreq = radiofreqmin;
 				radio_tune(ffreq);
 				drawstatus();
 				break;
 			case '0': case '1': case '2': case '3': case '4':
 		 	case '5': case '6': case '7': case '8': case '9':
-				if((buttons[(keywhile-48)]>=freqmin)&&(buttons[(keywhile-48)]<=freqmax))
+				if((buttons[(keywhile-48)]>=radiofreqmin)&&(buttons[(keywhile-48)]<=radiofreqmax))
 				{
 					ffreq = (float) buttons[(keywhile - 48)];
 					radio_tune(ffreq);
 				}
 				break;
 			case '=':
-				if((buttons[10] >= freqmin) && (buttons[10] <= freqmax))
+				if((buttons[10] >= radiofreqmin) && (buttons[10] <= radiofreqmax))
 				{
 					ffreq = (float) buttons[10];
 					radio_tune(ffreq);
 				}
 				break;
 			case '!':
-				if((buttons[11] >= freqmin) && (buttons[11] <= freqmax))
+				if((buttons[11] >= radiofreqmin) && (buttons[11] <= radiofreqmax))
 				{
 					ffreq = (float) buttons[11];
 					radio_tune(ffreq);
 				}
 				break;
 			case '\"':
-				if((buttons[12] >= freqmin) && (buttons[12] <= freqmax))
+				if((buttons[12] >= radiofreqmin) && (buttons[12] <= radiofreqmax))
 				{
 					ffreq = (float) buttons[12];
 					radio_tune(ffreq);
 				}
 				break;
 			case 167:
-				if((buttons[13] >= freqmin) && (buttons[13] <= freqmax))
+				if((buttons[13] >= radiofreqmin) && (buttons[13] <= radiofreqmax))
 				{
 					ffreq = (float) buttons[13];
 					radio_tune(ffreq);
 				}
 				break;
 			case '$':
-				if((buttons[14] >= freqmin) && (buttons[14] <= freqmax))
+				if((buttons[14] >= radiofreqmin) && (buttons[14] <= radiofreqmax))
 				{
 					ffreq = (float) buttons[14];
 					radio_tune(ffreq);
 				}
 				break;
 			case '%':
-				if((buttons[15] >= freqmin) && (buttons[15] <= freqmax))
+				if((buttons[15] >= radiofreqmin) && (buttons[15] <= radiofreqmax))
 				{
 					ffreq = (float) buttons[15];
 					radio_tune(ffreq);
 				}
 				break;
 			case '&':
-				if((buttons[16] >= freqmin) && (buttons[16] <= freqmax))
+				if((buttons[16] >= radiofreqmin) && (buttons[16] <= radiofreqmax))
 				{
 					ffreq = (float) buttons[16];
 					radio_tune(ffreq);
 				}
 				break;
 			case '/':
-				if((buttons[17] >= freqmin) && (buttons[17] <= freqmax))
+				if((buttons[17] >= radiofreqmin) && (buttons[17] <= radiofreqmax))
 				{
 					ffreq = (float) buttons[17];
 					radio_tune(ffreq);
 				}
 				break;
 			case '(':
-				if((buttons[18] >= freqmin) && (buttons[18] <= freqmax))
+				if((buttons[18] >= radiofreqmin) && (buttons[18] <= radiofreqmax))
 				{
 					ffreq = (float) buttons[18];
 					radio_tune(ffreq);
 				}
 				break;
 			case ')':
-				if((buttons[19] >= freqmin) && (buttons[19] <= freqmax))
+				if((buttons[19] >= radiofreqmin) && (buttons[19] <= radiofreqmax))
 				{
 					ffreq = (float) buttons[19];
 					radio_tune(ffreq);
@@ -1152,8 +1150,7 @@ int mainloop(void)
 			case 'f':
 				key = 0;
 				drawstatus();
-				strcpy(dira,dir);
-				strcat(dira,"*.raf");
+				snprintf(dira,sizeof(dira),"%s*.raf",dir);
 				globreturn = glob(dira,0,NULL,&fonts);
 				if(globreturn != 0)
 				{
@@ -1172,7 +1169,7 @@ int mainloop(void)
 					if(!strcmp(fonts.gl_pathv[j],font)) i = j;
 				while(key == 0)
 				{
-					strcpy(fntname,fonts.gl_pathv[i]);
+					strncpy(fntname,fonts.gl_pathv[i],sizeof(fntname));
 					drawstatus();
 					mvwprintw(statusw,1,2,"%3d: %s",i,basename(fntname));
 					strcpy(font,fonts.gl_pathv[i]);
@@ -1203,12 +1200,13 @@ int mainloop(void)
 				wbkgd(infow,(radiocolors.info_bold ? A_BOLD : 0) | COLOR_PAIR(7));
 				wborder(infow,0,0,0,0,0,0,0,0);
 				mvwprintw(infow,0,1," Informations about your radio-card ");
-				mvwprintw(infow,2,2,"Range        : %.2f - %.2f",freqmin,freqmax);
-				mvwprintw(infow,3,2,"MONO         : %d", radio_getmono());
-				mvwprintw(infow,4,2,"STEREO       : %d", radio_getstereo());
-				mvwprintw(infow,5,2,"CanSetVolume : %d", radio_cansetvolume());
-				mvwprintw(infow,6,2,"CanSetBass   : %d", radio_cansetbass());
-				mvwprintw(infow,7,2,"CanSetTreble : %d", radio_cansettreble());
+				mvwprintw(infow,2,2,"Range        : %.2f - %.2f",radiofreqmin,
+						radiofreqmax);
+				mvwprintw(infow,3,2,"MONO         : %d", AMONO);
+				mvwprintw(infow,4,2,"STEREO       : %d", ASTEREO);
+				mvwprintw(infow,5,2,"CanSetVolume : %d", SVOLUME);
+				mvwprintw(infow,6,2,"CanSetBass   : %d", SBASS);
+				mvwprintw(infow,7,2,"CanSetTreble : %d", STREBLE);
 				mvwprintw(infow,9,2,"(False = 0; True = 1)");
 				wrefresh(infow);
 				key = 0;

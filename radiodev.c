@@ -1,5 +1,5 @@
-/* DMCRadio 1.0.0
- * Copyright (c) 2002 Sven Hesse (DrMcCoy)
+/* DMCRadio 1.0.2
+ * Copyright (c) 2003 Sven Hesse (DrMcCoy)
  *
  * This file is part of DMCRadio and is distributed under the terms of
  * the GNU General Public Licence. See COPYING for more informations.
@@ -16,17 +16,22 @@
 #define FALSE 0
 #define TRUE 1
 
-static int radiodev, LOW, AMONO, ASTEREO, SVOLUME, SBASS, STREBLE;
-static double radiofreqmin, radiofreqmax;
+static int radiodev;
 extern int errno;
 static struct video_tuner tuner;
 static struct video_audio audio;
+
+int LOW, AMONO, ASTEREO, SVOLUME, SBASS, STREBLE;
+double radiofreqmin, radiofreqmax;
+
+int radio_getflags(void);
 
 int radio_init(char *device)
 {
 	radiodev = open(device,O_RDONLY);
 	if(radiodev == -1)
 		return errno;
+	radio_getflags();
 	return 0;
 }
 
@@ -35,12 +40,12 @@ int radio_getflags(void)
 	ioctl(radiodev, VIDIOCGTUNER, &tuner);
 	ioctl(radiodev, VIDIOCGAUDIO, &audio);
 	tuner.tuner = 0;
-	LOW = ((tuner.flags & 8) ? TRUE : FALSE);
-	AMONO = ((audio.mode & 1) ? TRUE : FALSE);
-	ASTEREO = ((audio.mode & 2) ? TRUE : FALSE);
-	SVOLUME = ((audio.flags & 4) ? TRUE : FALSE);
-	SBASS = ((audio.flags & 8) ? TRUE : FALSE);
-	STREBLE = ((audio.flags & 16) ? TRUE : FALSE);
+	LOW = (((tuner.flags & 8) == 8) ? TRUE : FALSE);
+	AMONO = (((audio.mode & 1) == 1) ? TRUE : FALSE);
+	ASTEREO = (((audio.mode & 2) == 2) ? TRUE : FALSE);
+	SVOLUME = (((audio.flags & 4) == 4) ? TRUE : FALSE);
+	SBASS = (((audio.flags & 8) == 8) ? TRUE : FALSE);
+	STREBLE = (((audio.flags & 16) == 16) ? TRUE : FALSE);
 	radiofreqmin = tuner.rangelow / (LOW ? 16000 : 16);
 	radiofreqmax = tuner.rangehigh / (LOW ? 16000 : 16);
 	return 0;
@@ -51,41 +56,6 @@ int radio_getaudiomode(void)
 	if(AMONO) return 1;
 	else if(ASTEREO) return 2;
 	else return 0;
-}
-
-int radio_getmono(void)
-{
-	return AMONO;
-}
-
-int radio_getstereo(void)
-{
-	return ASTEREO;
-}
-
-int radio_cansetvolume(void)
-{
-	return SVOLUME;
-}
-
-int radio_cansetbass(void)
-{
-	return SBASS;
-}
-
-int radio_cansettreble(void)
-{
-	return STREBLE;
-}
-
-double radio_getlowestfrequency(void)
-{
-	return radiofreqmin;
-}
-
-double radio_gethighestfrequency(void)
-{
-	return radiofreqmax;
 }
 
 int radio_getsignal(void)

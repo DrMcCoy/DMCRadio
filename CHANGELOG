@@ -1,5 +1,11 @@
+Friday 28.02.2003 (Version 1.0.2)
+  - fixed possible security holes (strcpy --> strncpy)
+  - deleted stupid functions in radiodev.c,
+    replaced them with non-static variables
+  - fixed some stupid things
+
 Thursday 18.07.2002 (Version 1.0.1)
-	- Added Feature "denoiser"
+  - Added Feature "denoiser" (Thanks to Michael Rauen)
 	
 Monday 30.06.2002 (Version 1.0.0)
-	- First Release
+  - First Release
