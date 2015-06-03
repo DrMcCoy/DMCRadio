@@ -1238,7 +1238,7 @@ else
 fi
 
 
-CFLAGS="-DYEAR=\"\\\"@YEAR@\\\"\" -DDATE=\"\\\"@DATE@\\\"\" -DDAY=\"\\\"@DAY@\\\"\" -Wall -pedantic"
+CFLAGS="-DYEAR=\"\\\"@YEAR@\\\"\" -DDATE=\"\\\"@DATE@\\\"\" -DDAY=\"\\\"@DAY@\\\"\" -Wall"
 LIBS="-lpthread -lm"
 
 echo $ac_n "checking how to run the C preprocessor""... $ac_c" 1>&6
@@ -1511,10 +1511,10 @@ else
 fi
 
 
-VERSION="1.0.2"
+VERSION="1.1.0"
 YEAR="2003"
-DATE="28.02.2003"
-DAY="Friday"
+DATE="28.12.2003"
+DAY="Sunday"
 
 
 

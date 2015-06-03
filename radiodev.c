@@ -1,4 +1,4 @@
-/* DMCRadio 1.0.2
+/* DMCRadio 1.1.0
  * Copyright (c) 2003 Sven Hesse (DrMcCoy)
  *
  * This file is part of DMCRadio and is distributed under the terms of
@@ -21,16 +21,14 @@ extern int errno;
 static struct video_tuner tuner;
 static struct video_audio audio;
 
-int LOW, AMONO, ASTEREO, SVOLUME, SBASS, STREBLE;
+int LOW, AMONO, ASTEREO, SMUTE, SMUTEA, SVOLUME, SBASS, STREBLE;
 double radiofreqmin, radiofreqmax;
 
 int radio_getflags(void);
 
 int radio_init(char *device)
 {
-	radiodev = open(device,O_RDONLY);
-	if(radiodev == -1)
-		return errno;
+	if((radiodev = open(device,O_RDONLY)) == -1) return errno;
 	radio_getflags();
 	return 0;
 }
@@ -43,6 +41,8 @@ int radio_getflags(void)
 	LOW = (((tuner.flags & 8) == 8) ? TRUE : FALSE);
 	AMONO = (((audio.mode & 1) == 1) ? TRUE : FALSE);
 	ASTEREO = (((audio.mode & 2) == 2) ? TRUE : FALSE);
+	SMUTE = (((audio.flags & 1) == 1) ? TRUE : FALSE);
+	SMUTEA = (((audio.flags & 2) == 2) ? TRUE : FALSE);
 	SVOLUME = (((audio.flags & 4) == 4) ? TRUE : FALSE);
 	SBASS = (((audio.flags & 8) == 8) ? TRUE : FALSE);
 	STREBLE = (((audio.flags & 16) == 16) ? TRUE : FALSE);

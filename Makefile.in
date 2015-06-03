@@ -57,10 +57,15 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
+host_alias = @host_alias@
+host_triplet = @host@
 CC = @CC@
 CXX = @CXX@
 DATE = @DATE@
 DAY = @DAY@
+HAVE_LIB = @HAVE_LIB@
+LIB = @LIB@
+LTLIB = @LTLIB@
 MAKEINFO = @MAKEINFO@
 PACKAGE = @PACKAGE@
 VERSION = @VERSION@
@@ -68,9 +73,9 @@ YEAR = @YEAR@
 
 AUTOMAKE_OPTIONS = gnu
 bin_PROGRAMS = DMCRadio
-DMCRadio_SOURCES = DMCRadio.c radiodev.c mixerdev.c
+DMCRadio_SOURCES = DMCRadio.c radiodev.c mixerdev.c dspdev.c
 man_MANS = DMCRadio.1
-noinst_HEADERS = radiodev.h mixerdev.h
+noinst_HEADERS = radiodev.h mixerdev.h dspdev.h
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_CLEAN_FILES = 
@@ -81,7 +86,7 @@ DEFS = @DEFS@ -I. -I$(srcdir)
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-DMCRadio_OBJECTS =  DMCRadio.o radiodev.o mixerdev.o
+DMCRadio_OBJECTS =  DMCRadio.o radiodev.o mixerdev.o dspdev.o
 DMCRadio_LDADD = $(LDADD)
 DMCRadio_DEPENDENCIES = 
 DMCRadio_LDFLAGS = 
@@ -103,7 +108,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP_ENV = --best
-DEP_FILES =  .deps/DMCRadio.P .deps/mixerdev.P .deps/radiodev.P
+DEP_FILES =  .deps/DMCRadio.P .deps/dspdev.P .deps/mixerdev.P \
+.deps/radiodev.P
 SOURCES = $(DMCRadio_SOURCES)
 OBJECTS = $(DMCRadio_OBJECTS)
 

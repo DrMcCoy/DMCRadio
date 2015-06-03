@@ -1,4 +1,4 @@
-.TH DMCRadio 1 "February 28, 2003" "" ""
+.TH DMCRadio 1 "December 28, 2003" "DMCRadio 1.1.0"
 .SH NAME
 DMCRadio - console radio application
 .SH SYNOPSIS
@@ -8,6 +8,8 @@ DMCRadio [options]
 DMCRadio is a ncurses-based console program for radio tuner cards supported
 by the Video4Linux system. It's like the 'radio' program by Gerd Knorr and Juli
 Merino, but much better (I hope...). 
+.br
+It also features a recording function.
 .SH OPTIONS
 .TP
 .B -h --help
@@ -30,22 +32,24 @@ Sets the radiodevice to dev. The default is /dev/radio.
 Sets the mixerdevice to dev. The default is /dev/mixer.
 .PD
 .TP
-.B -a inp
+.B -d dev
 .PD 0
 .TP
-.B --audiodevice inp
-Sets the Audiodevice for the volume-control to inp.  The default is "vol".
+.B --dspdev dev
+Sets the DSPdevice to dev. The default is /dev/dsp.
+.br
+(Used for recording.)
 .PD
 .TP
 .B -v --version
-Prints the version and exit.
+Prints the version and exits.
 .SH KEYBOARD CONTROLS
 .TP
-.B 0 - 9
-jump to Preset Station 0 - 9
+.B 1,2,3...9,0
+jump to Preset Station 1 - 10
 .TP
-.B shift+[0 - 9]
-jump to Preset Station 10 - 19
+.B shift+[1,2,3...9,0]
+jump to Preset Station 11 - 20
 .TP
 .B UP Key
 .br
@@ -53,6 +57,12 @@ tune 0.05 MHz up
 .TP
 .B DOWN Key
 tune 0.05 MHz down
+.TP
+.B LEFT Key
+previous volumecontrol
+.TP
+.B RIGHT Key
+next volumecontrol
 .TP
 .B >
 increase volume
@@ -65,6 +75,11 @@ mute
 .TP
 .B d
 denoiser (mutes radio "between" two stations)
+.TP
+.B l
+show mixerlabels instead of names
+.br
+(e.g. "PhoneIn" instead of "phin")
 .TP
 .B g
 go to a frequency
@@ -102,11 +117,48 @@ previous window
 .B - f
 cycle foreground color
 .br
-.B - f
+.B - b
 cycle background color
 .br
-.B - b
+.B - o
 toggle bold
+.TP
+.B r
+record
+.IP
+.B - LEFT Key
+previous volumecontrol
+.br
+.B - RIGHT Key
+next volumecontrol
+.br
+.B - >
+increase volume
+.br
+.B - <
+decrease volume
+.br
+.B - a
+auto-adjust (reduces volume on overruns)
+.br
+.B - SPACE
+start/stop recording
+.br
+.B - n
+next file
+.br
+    (same as typing space really really fast twice)
+.br
+.B - s
+toggle mono/stereo
+.br
+.B - r
+toggle between 11025Hz, 22050Hz and 44100Hz
+.br
+.B - m
+change maximal filesize
+.br
+    (accepts values like "110.42MB", "1000" and "143kb")
 .TP
 .B i
 show some details about your radio-card (or TV-card with radio-tuner)
@@ -117,16 +169,16 @@ switch to next helppage
 .B -
 switch to previous helppage
 .SH DMCRADIORC
-DMCRadio saves the actual configuration to ~/.DMCRadiorc when exiting.
+DMCRadio saves the current configuration to ~/.DMCRadiorc when exiting.
 .PP
 The format of this file is easy to understand. Lines starting with anything
-that is not recognized are ignored.
+that is not recognized will be ignored.
 .PP
 You can assign a value to a variable with
 .br
 .B Variable=Value
 .br
-The case of the variable-name is ignored.
+The case of the variable-name will be ignored.
 .PP
 The config file is divided into four sections:
 .TP
@@ -158,6 +210,8 @@ The config file is divided into four sections:
 # Info (Infos about your radio-card)
 .br
 # Scroll (The scroller)
+.br
+# Record (The record window)
 .br
 # Volume ("<" and ">" from the volume-control)
 .TP
@@ -203,15 +257,24 @@ The config file is divided into four sections:
 .br
 # lowest frequency possible.
 .br
-# (On exit, the actual frequency is saved here)
+# (On exit, the current frequency is saved here)
+.br
 .B Frequency=90.05
 .br
 # Mutes radio "between" two stations
 .br
 .B Denoiser=1
 .br
+# Maximal filesize for recording is 10485760 bytes (10MB)
+.br
+# Afer 10MB were written in one file, DMCRadio will continue
+.br
+# recording in a new file
+.br
+.B MaxRecSize=10485760
+.br
 .SH SEE ALSO
 .BR radio(1)
 .SH AUTHORS
 .nf
-DMCRadio is written by Sven Hesse (DrMcCoy).
+DMCRadio was written by Sven Hesse (DrMcCoy).

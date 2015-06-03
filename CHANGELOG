@@ -1,7 +1,18 @@
+Sunday 28.12.2003 (Version 1.1.0)
+  - dropped that stupid color-struct
+    (now using a window- and a windowfunctions-struct)
+  - code cleanup (=> a bit less messy)
+  - added record-function
+  - added a mutex (ncurses is not really thread-safe)
+  - volumecontrol changeable during runtime
+  - the preset stations are now accessible through 1,2,3...9,0 and
+    shift+[1,2,3...9,0]. This is more "logical" due to the keyboard-layout
+  - fixed some typos in the "documentation" (README + manpage)
+
 Friday 28.02.2003 (Version 1.0.2)
   - fixed possible security holes (strcpy --> strncpy)
   - deleted stupid functions in radiodev.c,
-    replaced them with non-static variables
+    replaced them with global variables
   - fixed some stupid things
 
 Thursday 18.07.2002 (Version 1.0.1)
